@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeSpeed Master - Test Your Typing Speed</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+        }
+        .typing-area {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 2px solid #e9ecef;
+        }
+        .text-display {
+            font-size: 1.5em;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+            min-height: 120px;
+            text-align: left;
+        }
+        .input-area {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .input-area:focus {
+            border-color: #667eea;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .stat {
+            background: #667eea;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin: 5px;
+            min-width: 120px;
+        }
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .level-indicator {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .correct { color: #28a745; }
+        .incorrect { color: #dc3545; background-color: #ffe6e6; }
+        .current { background-color: #fff3cd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 TypeSpeed Master</h1>
+        <p class="subtitle">Test Your Typing Speed - 10 Progressive Levels</p>
+        
+        <div class="level-indicator">
+            Level <span id="level">1</span> of 10
+        </div>
+        
+        <div class="typing-area">
+            <div class="text-display" id="textDisplay">
+                Click "Start Test" to begin your typing journey!
+            </div>
+            <input type="text" class="input-area" id="typingInput" placeholder="Start typing here..." disabled>
+        </div>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="wpm">0</div>
+                <div class="stat-label">WPM</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="accuracy">0%</div>
+                <div class="stat-label">Accuracy</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="timeLeft">60</div>
+                <div class="stat-label">Seconds</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" id="startBtn">Start Test</button>
+            <button class="btn" id="resetBtn" disabled>Reset</button>
+            <button class="btn" id="nextBtn" disabled>Next Level</button>
+        </div>
+    </div>
+
+    <script>
+        class TypeSpeedMaster {
+            constructor() {
+                this.currentLevel = 1;
+                this.isRunning = false;
+                this.startTime = null;
+                this.timer = null;
+                this.currentText = '';
+                this.userInput = '';
+                this.correctChars = 0;
+                this.totalChars = 0;
+                
+                this.texts = [
+                    "The quick brown fox jumps over the lazy dog. This is a simple sentence to test your basic typing skills.",
+                    "Technology has revolutionized the way we communicate and work. Modern computers are incredibly powerful tools.",
+                    "Learning to type efficiently is an essential skill in today's digital world. Practice makes perfect!",
+                    "The internet connects billions of people worldwide. Social media platforms have changed how we interact.",
+                    "Artificial intelligence is transforming various industries. Machine learning algorithms are becoming more sophisticated.",
+                    "Climate change is one of the most pressing issues of our time. We must work together to find sustainable solutions.",
+                    "Education is the foundation of personal and societal growth. Knowledge empowers individuals to make informed decisions.",
+                    "Innovation drives progress in science and technology. Breakthrough discoveries often come from years of dedicated research.",
+                    "Globalization has created interconnected economies and cultures. Understanding different perspectives enriches our worldview.",
+                    "The future belongs to those who can adapt and learn continuously. Embrace change and never stop growing."
+                ];
+                
+                this.initializeElements();
+                this.setupEventListeners();
+            }
+            
+            initializeElements() {
+                this.textDisplay = document.getElementById('textDisplay');
+                this.typingInput = document.getElementById('typingInput');
+                this.startBtn = document.getElementById('startBtn');
+                this.resetBtn = document.getElementById('resetBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.levelSpan = document.getElementById('level');
+                this.wpmSpan = document.getElementById('wpm');
+                this.accuracySpan = document.getElementById('accuracy');
+                this.timeLeftSpan = document.getElementById('timeLeft');
+            }
+            
+            setupEventListeners() {
+                this.startBtn.addEventListener('click', () => this.startTest());
+                this.resetBtn.addEventListener('click', () => this.resetTest());
+                this.nextBtn.addEventListener('click', () => this.nextLevel());
+                this.typingInput.addEventListener('input', (e) => this.handleInput(e));
+            }
+            
+            startTest() {
+                this.isRunning = true;
+                this.startTime = Date.now();
+                this.currentText = this.texts[this.currentLevel - 1];
+                this.userInput = '';
+                this.correctChars = 0;
+                this.totalChars = 0;
+                
+                this.displayText();
+                this.typingInput.value = '';
+                this.typingInput.disabled = false;
+                this.typingInput.focus();
+                
+                this.startBtn.disabled = true;
+                this.resetBtn.disabled = false;
+                
+                this.startTimer();
+            }
+            
+            displayText() {
+                this.textDisplay.innerHTML = this.currentText
+                    .split('')
+                    .map((char, index) => `<span id="char-${index}">${char}</span>`)
+                    .join('');
+            }
+            
+            handleInput(e) {
+                if (!this.isRunning) return;
+                
+                this.userInput = e.target.value;
+                this.updateDisplay();
+                this.calculateStats();
+            }
+            
+            updateDisplay() {
+                for (let i = 0; i < this.currentText.length; i++) {
+                    const charElement = document.getElementById(`char-${i}`);
+                    if (i < this.userInput.length) {
+                        if (this.userInput[i] === this.currentText[i]) {
+                            charElement.className = 'correct';
+                        } else {
+                            charElement.className = 'incorrect';
+                        }
+                    } else if (i === this.userInput.length) {
+                        charElement.className = 'current';
+                    } else {
+                        charElement.className = '';
+                    }
+                }
+            }
+            
+            calculateStats() {
+                this.totalChars = this.userInput.length;
+                this.correctChars = 0;
+                
+                for (let i = 0; i < this.userInput.length; i++) {
+                    if (this.userInput[i] === this.currentText[i]) {
+                        this.correctChars++;
+                    }
+                }
+                
+                const elapsed = (Date.now() - this.startTime) / 1000;
+                const wpm = this.totalChars > 0 ? Math.round((this.correctChars / 5) / (elapsed / 60)) : 0;
+                const accuracy = this.totalChars > 0 ? Math.round((this.correctChars / this.totalChars) * 100) : 0;
+                
+                this.wpmSpan.textContent = wpm;
+                this.accuracySpan.textContent = accuracy + '%';
+            }
+            
+            startTimer() {
+                let timeLeft = 60;
+                this.timeLeftSpan.textContent = timeLeft;
+                
+                this.timer = setInterval(() => {
+                    timeLeft--;
+                    this.timeLeftSpan.textContent = timeLeft;
+                    
+                    if (timeLeft <= 0) {
+                        this.endTest();
+                    }
+                }, 1000);
+            }
+            
+            endTest() {
+                this.isRunning = false;
+                clearInterval(this.timer);
+                this.typingInput.disabled = true;
+                
+                this.startBtn.disabled = false;
+                this.resetBtn.disabled = false;
+                this.nextBtn.disabled = false;
+                
+                if (this.currentLevel < 10) {
+                    this.nextBtn.disabled = false;
+                }
+            }
+            
+            resetTest() {
+                this.isRunning = false;
+                clearInterval(this.timer);
+                this.typingInput.value = '';
+                this.typingInput.disabled = true;
+                
+                this.startBtn.disabled = false;
+                this.resetBtn.disabled = true;
+                this.nextBtn.disabled = true;
+                
+                this.textDisplay.innerHTML = 'Click "Start Test" to begin your typing journey!';
+                this.wpmSpan.textContent = '0';
+                this.accuracySpan.textContent = '0%';
+                this.timeLeftSpan.textContent = '60';
+            }
+            
+            nextLevel() {
+                if (this.currentLevel < 10) {
+                    this.currentLevel++;
+                    this.levelSpan.textContent = this.currentLevel;
+                    this.resetTest();
+                }
+            }
+        }
+        
+        // Initialize the application
+        new TypeSpeedMaster();
+    </script>
+</body>
+</html>

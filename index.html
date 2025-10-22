@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Speed Test - Level Up Your Skills!</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Homepage -->
+    <div id="homepage" class="page active">
+        <div class="container">
+            <header class="header">
+                <h1><i class="fas fa-keyboard"></i> Typing Speed Master</h1>
+                <p>Test your typing skills and level up!</p>
+                <div class="help-section">
+                    <button id="helpBtn" class="btn btn-help">
+                        <i class="fas fa-question-circle"></i> Help
+                    </button>
+                </div>
+            </header>
+            
+            <div class="welcome-section">
+                <div class="user-input-section">
+                    <h2>Welcome, Speed Typer!</h2>
+                    <div class="input-group">
+                        <input type="text" id="username" placeholder="Enter your name" maxlength="20">
+                        <button id="startTest" class="btn btn-primary">
+                            <i class="fas fa-play"></i> Start Test
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="features">
+                    <div class="feature-card">
+                        <i class="fas fa-trophy"></i>
+                        <h3>20 Levels</h3>
+                        <p>Progressive difficulty from 30 to 600 characters</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-stopwatch"></i>
+                        <h3>5-Second Timer</h3>
+                        <p>Get ready before the test begins</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Detailed Results</h3>
+                        <p>Track your progress and mistakes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Page -->
+    <div id="testPage" class="page">
+        <div class="container">
+            <header class="test-header">
+                <div class="level-info">
+                    <h2>Level <span id="currentLevel">1</span></h2>
+                    <p>Characters: <span id="charCount">30</span></p>
+                </div>
+                <div class="timer-section">
+                    <div id="countdown" class="countdown">
+                        <span id="countdownNumber">5</span>
+                    </div>
+                    <div id="testTimer" class="test-timer hidden">
+                        <i class="fas fa-clock"></i>
+                        <span id="timerDisplay">00:00</span>
+                    </div>
+                </div>
+                <button id="homeBtn" class="btn btn-secondary">
+                    <i class="fas fa-home"></i> Home
+                </button>
+            </header>
+
+            <div class="test-content">
+                <div class="motivation-popup" id="motivationPopup">
+                    <div class="popup-content">
+                        <i class="fas fa-star"></i>
+                        <h3 id="motivationText">You've got this, <span id="userNameDisplay"></span>!</h3>
+                        <p id="motivationSubtext">Focus and type as fast as you can!</p>
+                    </div>
+                </div>
+
+                <div class="typing-area">
+                    <div class="text-display">
+                        <div id="textToType" class="text-content"></div>
+                    </div>
+                    <div class="input-area">
+                        <textarea id="userInput" placeholder="Start typing here..." disabled></textarea>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progressText">0 / 30 characters</span>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button id="finishBtn" class="btn btn-success hidden">
+                        <i class="fas fa-flag-checkered"></i> Finish Test
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Page -->
+    <div id="resultsPage" class="page">
+        <div class="container">
+            <div class="results-content">
+                <div class="results-header">
+                    <div class="celebration">
+                        <i class="fas fa-trophy celebration-icon"></i>
+                        <h1>Great Job, <span id="resultsUserName"></span>!</h1>
+                    </div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card main-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="wpm">0</h3>
+                                <p>Words Per Minute</p>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="accuracy">0%</h3>
+                                <p>Accuracy</p>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="timeTaken">0s</h3>
+                                <p>Time Taken</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card detailed-stats">
+                        <h3><i class="fas fa-chart-bar"></i> Detailed Statistics</h3>
+                        <div class="stats-list">
+                            <div class="stat-row">
+                                <span>Characters Typed:</span>
+                                <span id="charactersTyped">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Mistakes:</span>
+                                <span id="mistakes">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Level Completed:</span>
+                                <span id="levelCompleted">1</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Characters Per Second:</span>
+                                <span id="cps">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card cartoon-section">
+                        <h3><i class="fas fa-smile"></i> Achievement Unlocked!</h3>
+                        <div class="cartoon-container">
+                            <div class="cartoon-character" id="cartoonCharacter">
+                                <div class="character-body">🎯</div>
+                                <div class="character-face">😊</div>
+                            </div>
+                            <div class="achievement-text" id="achievementText">
+                                <p>You're doing amazing!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="nextLevelBtn" class="btn btn-primary">
+                        <i class="fas fa-arrow-right"></i> Next Level
+                    </button>
+                    <button id="retryBtn" class="btn btn-secondary">
+                        <i class="fas fa-redo"></i> Retry Level
+                    </button>
+                    <button id="homeFromResultsBtn" class="btn btn-outline">
+                        <i class="fas fa-home"></i> Back to Home
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-question-circle"></i> Help & Support</h2>
+                <span class="close" id="closeHelp">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="help-content">
+                    <h3><i class="fas fa-info-circle"></i> How to Use</h3>
+                    <ul>
+                        <li>Enter your name and click "Start Test"</li>
+                        <li>Wait for the 5-second countdown to begin</li>
+                        <li>Type the displayed text as accurately as possible</li>
+                        <li>View your detailed results and statistics</li>
+                        <li>Progress through 20 levels with increasing difficulty</li>
+                    </ul>
+                    
+                    <h3><i class="fas fa-trophy"></i> Scoring System</h3>
+                    <ul>
+                        <li><strong>WPM:</strong> Words Per Minute (5 characters = 1 word)</li>
+                        <li><strong>Accuracy:</strong> Percentage of correct characters</li>
+                        <li><strong>Levels:</strong> 1-20 with 30 character increments</li>
+                        <li><strong>Mistakes:</strong> Incorrect characters are highlighted in red</li>
+                    </ul>
+                    
+                    <h3><i class="fas fa-envelope"></i> Need More Help? <a href="mailto:santhoshreddy054@gmail.com">santhoshreddy054@gmail.com</a></h3>
+                    <div class="contact-info">
+                        <p>If you have any questions or need assistance, feel free to reach out:</p>
+                        <div class="email-contact">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <p class="contact-note">We'll get back to you as soon as possible!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
