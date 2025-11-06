@@ -71,3 +71,4 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+<img width="1131" height="579" alt="image" src="https://github.com/user-attachments/assets/2ee83861-a999-4fec-8a11-a6f6242c728a" />
